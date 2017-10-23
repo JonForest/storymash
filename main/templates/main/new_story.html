@@ -1,0 +1,16 @@
+<html>
+<head>
+    <title>Start a New Story!</title>
+</head>
+
+<body>
+    <a href="{%  url 'index' %}">See all stories</a>
+    <form action="{% url 'new_story'  %}" method="post">
+        {% csrf_token %}
+        <label for="title">Enter your story's title:</label>
+        <input id="title" name="title"></input>
+        <input type="submit" value="Save!">
+    </form>
+
+</body>
+</html>

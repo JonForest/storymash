@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 
@@ -7,5 +9,5 @@ class Story(models.Model):
 
 class Contribution(models.Model):
     contribution_text = models.TextField()
-    submitted_at = models.DateTimeField()
+    submitted_at = models.DateTimeField(default=datetime.now)
     story = models.ForeignKey(Story, on_delete=models.CASCADE)
