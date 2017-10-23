@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Storymash</title>
+</head>
+
+<body>
+    {% if latest_stories %}
+        <ul>
+        {% for story in latest_stories %}
+            <li><a href="{% url 'story' story.id %}">{{ story.title }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No stories are available.</p>
+    {% endif %}
+</body>
+</html>
