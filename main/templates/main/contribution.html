@@ -1,0 +1,13 @@
+<head>
+    <title>{{ story.title }}</title>
+</head>
+<body>
+    <a href="{%  url 'index' %}">See all stories</a>
+    <h1>Edit Your Contribution for "{{ story.title }}"</h1>
+
+    <form action="{% url 'contribution' story.id contribution.id %}" method="post">
+        {% csrf_token %}
+        <textarea name="contribution_text">{{ contribution.contribution_text }}</textarea>
+        <input type="submit" value="Save!">
+    </form>
+</body>

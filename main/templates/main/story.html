@@ -7,6 +7,7 @@
     {% if story.contribution_set %}
         {% for contribution in story.contribution_set.all %}
             <div>{{ contribution.contribution_text }}</div>
+            <div><a href="{% url 'contribution' story.id contribution.id %}">Edit</a></div>
         {% endfor %}
     {% else %}
         <p>No contributions yet made</p>
