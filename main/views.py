@@ -1,12 +1,19 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
+from django.views import generic
+
 from .models import Story, Contribution
 from django.utils.html import strip_tags
 
 
-def index(request):
-    latest_stories = Story.objects.all()
-    return render(request, 'main/index.html', {'latest_stories': latest_stories})
+# Example of a class-based view
+class IndexView(generic.ListView):
+    template_name = 'main/index.html'
+    context_object_name = 'latest_stories'
+
+    def get_queryset(self):
+        """Return all the stories"""
+        return Story.objects.all()
 
 
 def story(request, story_id):
