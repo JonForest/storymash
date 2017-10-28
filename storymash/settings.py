@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'storymash.urls'
 
 LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = '/login/'
 
 TEMPLATES = [
     {

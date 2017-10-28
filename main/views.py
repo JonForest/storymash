@@ -1,6 +1,8 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.views import generic
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from .models import Story, Contribution
 from django.utils.html import strip_tags
@@ -16,14 +18,23 @@ class IndexView(generic.ListView):
         return Story.objects.all()
 
 
-def story(request, story_id):
-    found_story = Story.objects.prefetch_related('contribution_set').filter(id=story_id)
-    if not len(found_story):
-        raise Http404('No Story matches the provided id.')
+@method_decorator(login_required, name='post')
+class StoryView(generic.DetailView):
 
-    if request.method == 'GET':
+    def get(self, request, *args, **kwargs):
+        story_id = args[0]
+        found_story = Story.objects.prefetch_related('contribution_set').filter(id=story_id)
+        if not len(found_story):
+            raise Http404('No Story matches the provided id.')
+
         return render(request, 'main/story.html', {'story': found_story.first()})
-    elif request.method == 'POST':
+
+    def post(self, request, *args):
+        story_id = args[0]
+        found_story = Story.objects.prefetch_related('contribution_set').filter(id=story_id)
+        if not len(found_story):
+            raise Http404('No Story matches the provided id.')
+
         contribution_text = strip_tags(request.POST['contribution_text'])
         contribution = Contribution(contribution_text=contribution_text, story_id=story_id)
         contribution.save()
@@ -31,18 +42,17 @@ def story(request, story_id):
         # Fetch story again with any updates
         refreshed_story = Story.objects.prefetch_related('contribution_set').filter(id=story_id)
         return render(request, 'main/story.html', {'story': refreshed_story.first()})
-    else:
-        raise HttpResponse('{} not supported'.format(request.method,), status=500)
 
 
-def new_story(request):
-    if request.method == 'GET':
+@method_decorator(login_required, name='dispatch')
+class NewStoryView(generic.DetailView):
+
+    def get(self, request, *args, **kwargs):
         return render(request, 'main/new_story.html')
-    elif request.method == 'POST':
+
+    def post(self, request):
         title = strip_tags(request.POST['title'])
         new_user_story = Story(title=title)
         new_user_story.save()
 
         return redirect('index')
-    else:
-        raise HttpResponse('{} not supported'.format(request.method,), status=500)
